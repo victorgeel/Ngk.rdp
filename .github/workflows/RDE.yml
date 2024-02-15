@@ -1,0 +1,19 @@
+# Reverse Windows RDP for GitHub Actions
+# This YAML establishes the "build" workflow where we will execute all required scripts
+# During the process, it should get stuck at the last step where it creates a new tunnel on ngrok.
+
+name: Windows
+on: [push]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Preparing environment...
+      env:
+        NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
+        RDP_PASSWORD: ${{ secrets.RDP_PASSWORD }}
+      run: ./configure.ps1
+    - name: Creating tunnel with ngrok...
+      run: ./ngrok/ngrok tcp 3389
